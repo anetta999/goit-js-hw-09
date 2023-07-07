@@ -2,7 +2,7 @@ const startBtn = document.querySelector('button[data-start]');
 const stopBtn = document.querySelector('button[data-stop]');
 console.log(startBtn);
 console.log(stopBtn);
-let timerId = null;
+let timerID = null;
 
 startBtn.addEventListener('click', changeBodyBackgroundColor);
 function changeBodyBackgroundColor(evt) {
