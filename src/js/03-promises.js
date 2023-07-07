@@ -12,9 +12,9 @@ form.addEventListener('submit', onFormSubmit);
 function onFormSubmit(evt) {
   evt.preventDefault();
   const { delay, step, amount } = evt.currentTarget.elements;
-  let numberedDelay = Number(delay.value);
-  let numberedStep = Number(step.value);
-  let numberedAmount = Number(amount.value);
+  const numberedDelay = Number(delay.value);
+  const numberedStep = Number(step.value);
+  const numberedAmount = Number(amount.value);
 
   if (numberedAmount <= 0 || numberedDelay <= 0 || numberedStep < 0) {
     Notiflix.Notify.failure('The entered value should be greater then 0');
