@@ -1,5 +1,8 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import Notiflix from 'notiflix';
+import 'notiflix/dist/notiflix-3.2.6.min.css';
+// console.log(Notiflix);
 
 const selectors = {
   input: document.querySelector('#datetime-picker'),
@@ -17,36 +20,39 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     console.log(selectedDates[0]);
+    if (options.defaultDate >= selectedDates[0]) {
+      selectors.button.disabled = true;
+      Notiflix.Notify.failure('Please choose a date in the future');
+    } else {
+      selectors.button.disabled = false;
+    }
   },
 };
 
 const calendar = flatpickr('#datetime-picker', options);
+let timerID = null;
 
-selectors.button.addEventListener('click', setTimer);
+selectors.button.disabled = true;
+selectors.button.addEventListener('click', runTimer);
 
-function setTimer(evt) {
-  // console.log(calendar.selectedDates[0]);
-  const currentDate = options.defaultDate;
-  console.log(currentDate);
-  const selectedDate = calendar.selectedDates[0];
-  console.log(selectedDate);
-  const deltaTime = selectedDate - currentDate;
-  console.log(deltaTime);
-  if (deltaTime < 0) {
-    alert('"Please choose a date in the future"');
-    evt.target.disabled = true;
-  } else if (deltaTime > 0) {
+function runTimer(evt) {
+  evt.target.disabled = true;
+
+  timerID = setInterval(() => {
+    const currentDate = new Date();
+    // console.log(currentDate);
+    const targetDate = calendar.selectedDates[0];
+    // console.log(targetDate);
+    const deltaTime = targetDate - currentDate;
+    const time = convertMs(deltaTime);
+    // console.log(time);
+
+    updateTimerInterface(time);
+  }, 1000);
+  if (calendar.selectedDates[0] - new Date() <= 0) {
+    clearInterval(timerID);
     evt.target.disabled = false;
   }
-  const convertedDeltaTime = convertMs(deltaTime);
-  console.log(convertedDeltaTime);
-
-  setInterval(() => {
-    selectors.days.textContent = convertedDeltaTime.days;
-    selectors.hours.textContent = convertedDeltaTime.hours;
-    selectors.minutes.textContent = convertedDeltaTime.minutes;
-    selectors.seconds.textContent = convertedDeltaTime.seconds;
-  }, 1000);
 }
 
 function convertMs(ms) {
@@ -72,4 +78,11 @@ function convertMs(ms) {
 
 function addLeadingZero(value) {
   return String(value).padStart(2, '0');
+}
+
+function updateTimerInterface({ days, hours, minutes, seconds }) {
+  selectors.days.textContent = `${days}`;
+  selectors.hours.textContent = `${hours}`;
+  selectors.minutes.textContent = `${minutes}`;
+  selectors.seconds.textContent = `${seconds}`;
 }
