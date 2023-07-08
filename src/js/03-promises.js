@@ -41,7 +41,10 @@ function createPromise(position, delay) {
 }
 
 function createPromises(chosenAmount, chosenDelay, step) {
-  for (let i = 0; i <= chosenAmount; i += 1) {
+  for (let i = 1; i <= chosenAmount; i += 1) {
+    if (i === 1) {
+      chosenDelay -= step;
+    }
     chosenDelay += step;
     createPromise(i, chosenDelay)
       .then(({ position, delay }) => {
